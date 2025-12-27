@@ -44,7 +44,7 @@ export const useFuturisticSounds = () => {
     noise.stop(ctx.currentTime + 0.1);
   }, [initCtx]);
 
-  // Luxurious Click: Deep wood/velvet thud with a tiny gold "tink"
+  // Luxurious Click: Deep thud + tiny gold "tink"
   const playClick = useCallback(() => {
     initCtx();
     if (!audioCtx.current) return;
@@ -75,31 +75,31 @@ export const useFuturisticSounds = () => {
     oscTink.stop(ctx.currentTime + 0.05);
   }, [initCtx]);
 
-  // The "Continuous Ka-Ching" Slider Tick
+  // High-End "Ka-Ching" Crystalline Slider Tick
   const playTick = useCallback(() => {
     initCtx();
     if (!audioCtx.current) return;
     const ctx = audioCtx.current;
 
-    // High frequency metallic "ching" components
-    const freqs = [2400, 3200, 4800];
-    freqs.forEach((freq, i) => {
+    const harmonics = [2400, 3200, 4800, 6400, 8000];
+    
+    harmonics.forEach((freq, i) => {
       const osc = ctx.createOscillator();
       const gain = ctx.createGain();
-      osc.type = 'sine';
-      osc.frequency.setValueAtTime(freq, ctx.currentTime);
       
-      // Extremely fast decay for a crisp "coin" feel
-      gain.gain.setValueAtTime(0.006 + (i * 0.002), ctx.currentTime);
-      gain.gain.exponentialRampToValueAtTime(0.0001, ctx.currentTime + 0.012);
+      osc.type = 'sine';
+      osc.frequency.setValueAtTime(freq + (Math.random() * 20 - 10), ctx.currentTime);
+      
+      const initialGain = (0.005 + Math.random() * 0.003) / (i + 1);
+      gain.gain.setValueAtTime(initialGain, ctx.currentTime);
+      gain.gain.exponentialRampToValueAtTime(0.0001, ctx.currentTime + 0.01 + (i * 0.004));
 
       osc.connect(gain);
       gain.connect(ctx.destination);
       osc.start();
-      osc.stop(ctx.currentTime + 0.015);
+      osc.stop(ctx.currentTime + 0.05);
     });
 
-    // Sub-millisecond noise burst for the "ka" / mechanical friction sound
     const noise = ctx.createBufferSource();
     const buffer = ctx.createBuffer(1, ctx.sampleRate * 0.005, ctx.sampleRate);
     const data = buffer.getChannelData(0);
@@ -109,9 +109,9 @@ export const useFuturisticSounds = () => {
     const noiseGain = ctx.createGain();
     const noiseFilter = ctx.createBiquadFilter();
     noiseFilter.type = 'highpass';
-    noiseFilter.frequency.value = 5000;
+    noiseFilter.frequency.value = 7500;
 
-    noiseGain.gain.setValueAtTime(0.004, ctx.currentTime);
+    noiseGain.gain.setValueAtTime(0.003, ctx.currentTime);
     noiseGain.gain.exponentialRampToValueAtTime(0.0001, ctx.currentTime + 0.005);
 
     noise.connect(noiseFilter);
@@ -149,7 +149,7 @@ export const useFuturisticSounds = () => {
     osc.stop(ctx.currentTime + 0.4);
   }, [initCtx]);
 
-  // Grand Success: A warm orchestral-style chime (Ethereal wealth)
+  // Grand Success: Orchestral Major 7th arpeggio (The "Jackpot" sound)
   const playSuccess = useCallback(() => {
     initCtx();
     if (!audioCtx.current) return;

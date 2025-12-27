@@ -1,4 +1,4 @@
-import React, { useMemo, useCallback, useState, useEffect } from 'react';
+import React, { useMemo, useCallback, useState } from 'react';
 import { GlassCard } from './GlassCard';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useFuturisticSounds } from '../hooks/useFuturisticSounds';
@@ -13,7 +13,8 @@ import {
   ArrowLeft,
   Sparkles,
   AlertCircle,
-  ShieldCheck
+  ShieldCheck,
+  TrendingUp
 } from 'lucide-react';
 
 interface Props {
@@ -26,8 +27,6 @@ interface Props {
     linkClickRate: number;
     registrationRate: number;
     ftdRate: number;
-    revshareRate: number;
-    avgSpend: number;
   };
   setParams: (p: any) => void;
 }
@@ -85,7 +84,7 @@ export const SwissGoldSimulation: React.FC<Props> = ({ marketId, params, setPara
   const steps = useMemo(() => [
     { 
       id: 'reach', 
-      label: `${marketId} views`, 
+      label: `${marketId} Segment Share`, 
       input: totalViews, 
       output: marketViews, 
       rate: targetShare, 
@@ -95,11 +94,11 @@ export const SwissGoldSimulation: React.FC<Props> = ({ marketId, params, setPara
       textColor: 'text-slate-300',
       fillColor: 'bg-slate-500/10',
       suffix: '%', min: 1, max: 100, step: 1, 
-      explanation: `Efficiency in capturing specific ${marketId} traffic from broader regional pools.` 
+      explanation: `The percentage of total impressions effectively reaching the specific ${marketId} audience.` 
     },
     { 
       id: 'intent', 
-      label: 'profile visits', 
+      label: 'Profile Visit Velocity', 
       input: marketViews, 
       output: profileVisits, 
       rate: profileVisitRate, 
@@ -109,11 +108,11 @@ export const SwissGoldSimulation: React.FC<Props> = ({ marketId, params, setPara
       textColor: 'text-rose-400',
       fillColor: 'bg-rose-500/10',
       suffix: '%', min: 0.1, max: 10, step: 0.1, 
-      explanation: 'Native conversion from content views to profile interest.' 
+      explanation: 'Viewers transitioning from content engagement to active profile exploration.' 
     },
     { 
       id: 'click', 
-      label: 'Link in bio clicked', 
+      label: 'Link-in-Bio CTR', 
       input: profileVisits, 
       output: linkClicks, 
       rate: linkClickRate, 
@@ -123,11 +122,11 @@ export const SwissGoldSimulation: React.FC<Props> = ({ marketId, params, setPara
       textColor: 'text-cyan-400',
       fillColor: 'bg-cyan-500/10',
       suffix: '%', min: 1, max: 50, step: 1, 
-      explanation: 'Visitors clicking the high-intent primary destination link.' 
+      explanation: 'Conversion of profile visitors to high-intent primary destination clicks.' 
     },
     { 
       id: 'signup', 
-      label: 'Sign ups', 
+      label: 'Onboarding Efficiency', 
       input: linkClicks, 
       output: registrations, 
       rate: registrationRate, 
@@ -137,11 +136,11 @@ export const SwissGoldSimulation: React.FC<Props> = ({ marketId, params, setPara
       textColor: 'text-purple-400',
       fillColor: 'bg-purple-500/10',
       suffix: '%', min: 5, max: 80, step: 1, 
-      explanation: 'Registration efficiency from landing page traffic.' 
+      explanation: 'Landing page registration performance for qualified Tier-1 leads.' 
     },
     { 
       id: 'ftd', 
-      label: 'FTD (Deposits)', 
+      label: 'Conversion / Success (FTD)', 
       input: registrations, 
       output: ftds, 
       rate: ftdRate, 
@@ -151,7 +150,7 @@ export const SwissGoldSimulation: React.FC<Props> = ({ marketId, params, setPara
       textColor: activeTheme.text,
       fillColor: marketId === 'CH' ? 'bg-amber-500/20' : activeTheme.text.replace('text', 'bg') + '/20',
       suffix: '%', min: 1, max: 95, step: 1, 
-      explanation: 'Final conversion stage: High-LTV First Time Deposits.' 
+      explanation: 'The ultimate revenue event: Qualified First Time Deposits.' 
     },
   ], [totalViews, targetShare, profileVisitRate, linkClickRate, registrationRate, ftdRate, marketViews, profileVisits, linkClicks, registrations, ftds, setParams, marketId, activeTheme]);
 
@@ -171,38 +170,42 @@ export const SwissGoldSimulation: React.FC<Props> = ({ marketId, params, setPara
   };
 
   return (
-    <div className="space-y-6 animate-in fade-in duration-700 max-w-5xl mx-auto px-4 pb-20">
-      {/* Top Console */}
-      <GlassCard className={`border-t-${activeTheme.color}-500/50 p-4`} glowColor="none">
-        <div className="flex flex-col md:flex-row justify-between items-center gap-6">
-          <div className="flex items-center gap-4 shrink-0">
-             <div className={`p-2.5 ${activeTheme.text.replace('text', 'bg')}/20 rounded-xl ${activeTheme.text} border border-current/30`}>
-               <Mountain size={18} />
+    <div className="space-y-10 animate-in fade-in duration-1000 max-w-5xl mx-auto pb-20">
+      {/* Simulation Control Console */}
+      <GlassCard className={`border-t-${activeTheme.color}-500/50 p-6`} glowColor="none">
+        <div className="flex flex-col md:flex-row justify-between items-center gap-8">
+          <div className="flex items-center gap-5 shrink-0">
+             <div className={`p-3 ${activeTheme.text.replace('text', 'bg')}/20 rounded-2xl ${activeTheme.text} border border-current/30 shadow-lg`}>
+               <Mountain size={22} />
              </div>
              <div>
-               <h2 className="text-lg font-display font-bold text-white leading-none uppercase tracking-tight">Funnel Core</h2>
-               <p className="text-slate-500 text-[8px] font-bold tracking-[0.2em] uppercase mt-1">Traffic Input</p>
+               <h2 className="text-xl font-display font-bold text-white leading-none uppercase tracking-tight flex items-center gap-2">
+                 Input Console
+                 <TrendingUp size={14} className="opacity-50" />
+               </h2>
+               <p className="text-slate-500 text-[9px] font-black tracking-[0.3em] uppercase mt-2">Gross impressions baseline</p>
              </div>
           </div>
 
-          <div className="flex flex-1 items-center gap-4 bg-black/20 p-2 px-4 rounded-xl border border-white/5 w-full">
-             <div className="flex flex-col items-start min-w-[100px]">
-                <span className="text-[8px] font-bold text-slate-500 uppercase tracking-widest">Impressions</span>
-                <span className="text-[10px] md:text-xs font-mono font-bold text-white">{totalViews.toLocaleString()}</span>
-             </div>
-             <div className="w-px h-8 bg-white/10 shrink-0" />
-             <div className="flex-1 flex items-center h-8">
-               <input 
-                  type="range" min={100000} max={300000000} step={100000} value={totalViews}
-                  onMouseDown={() => handleInteraction('click')}
-                  onInput={() => handleInteraction('tick')}
-                  onChange={(e) => setParams({ totalViews: parseInt(e.target.value) })}
-                  className="w-full"
-               />
-             </div>
+          <div className="flex-1 w-full space-y-3">
+            <div className="flex justify-between px-1">
+              <span className="text-[10px] font-black text-slate-500 uppercase tracking-widest">Scaling Power</span>
+              <span className="text-[11px] font-mono font-bold text-white">{totalViews.toLocaleString()} <span className="text-slate-500">VIEWS</span></span>
+            </div>
+            <div className="flex items-center gap-4 bg-black/40 p-3 rounded-2xl border border-white/5 w-full">
+               <div className="flex-1 flex items-center h-8">
+                 <input 
+                    type="range" min={100000} max={300000000} step={100000} value={totalViews}
+                    onMouseDown={() => handleInteraction('click')}
+                    onInput={() => handleInteraction('tick')}
+                    onChange={(e) => setParams({ totalViews: parseInt(e.target.value) })}
+                    className="w-full"
+                 />
+               </div>
+            </div>
           </div>
           
-          <div className="flex items-center gap-1.5 bg-black/40 p-1 rounded-xl border border-white/10 shrink-0">
+          <div className="flex items-center gap-2 bg-black/40 p-2 rounded-2xl border border-white/10 shrink-0">
             {(['conservative', 'realistic', 'optimistic'] as const).map(p => {
               const isActive = (p === 'conservative' && totalViews === presets[marketId].conservative.totalViews) || 
                               (p === 'realistic' && totalViews === presets[marketId].realistic.totalViews) || 
@@ -212,10 +215,10 @@ export const SwissGoldSimulation: React.FC<Props> = ({ marketId, params, setPara
                   key={p} 
                   onClick={() => applyPreset(p)} 
                   onMouseEnter={() => handleInteraction('hover')}
-                  className={`px-3 py-1.5 rounded-lg text-[9px] font-bold uppercase tracking-wider transition-all ${
+                  className={`px-5 py-2.5 rounded-xl text-[10px] font-black uppercase tracking-wider transition-all duration-300 ${
                     isActive
-                    ? `${activeTheme.text.replace('text', 'bg')} text-black shadow-lg`
-                    : 'text-slate-500 hover:text-slate-300'
+                    ? `${activeTheme.text.replace('text', 'bg')} text-black shadow-[0_0_15px_rgba(251,191,36,0.3)]`
+                    : 'text-slate-500 hover:text-white hover:bg-white/5'
                   }`}
                 >
                   {p}
@@ -226,13 +229,13 @@ export const SwissGoldSimulation: React.FC<Props> = ({ marketId, params, setPara
         </div>
       </GlassCard>
 
-      {/* Funnel Section with Stacked Layout */}
-      <div className="relative flex flex-col items-center">
-        <div className="w-full space-y-2 flex flex-col items-center">
+      {/* Funnel Visualization Stage */}
+      <div className="relative flex flex-col items-center pt-4">
+        <div className="w-full space-y-3 flex flex-col items-center">
           {steps.map((step, i) => {
             const isExpanded = expandedId === step.id;
             const anyExpanded = expandedId !== null;
-            const collapsedWidth = `${98 - (i * 4)}%`;
+            const collapsedWidth = `${100 - (i * 3)}%`;
             const isFTD = step.id === 'ftd';
             
             return (
@@ -241,11 +244,11 @@ export const SwissGoldSimulation: React.FC<Props> = ({ marketId, params, setPara
                 layout
                 initial={false}
                 animate={{ 
-                  width: isExpanded ? (isFTD ? "85%" : "100%") : collapsedWidth,
+                  width: isExpanded ? "100%" : collapsedWidth,
                   opacity: anyExpanded && !isExpanded ? 0.35 : 1,
-                  filter: anyExpanded && !isExpanded ? 'blur(1.5px)' : 'blur(0px)',
-                  scale: anyExpanded && !isExpanded ? 0.97 : 1,
-                  y: anyExpanded && !isExpanded ? (i < steps.findIndex(s => s.id === expandedId) ? -4 : 4) : 0,
+                  filter: anyExpanded && !isExpanded ? 'blur(2px)' : 'blur(0px)',
+                  scale: anyExpanded && !isExpanded ? 0.98 : 1,
+                  y: anyExpanded && !isExpanded ? (i < steps.findIndex(s => s.id === expandedId) ? -8 : 8) : 0,
                   zIndex: isExpanded ? 50 : 10 - i,
                 }}
                 transition={fluidTransition}
@@ -257,15 +260,15 @@ export const SwissGoldSimulation: React.FC<Props> = ({ marketId, params, setPara
                   onClick={() => toggleExpand(step.id)}
                   className={`relative cursor-pointer w-full overflow-hidden border backdrop-blur-md transition-all duration-300 ${
                     isFTD 
-                      ? `bg-gradient-to-br from-${activeTheme.color}-600/25 via-${activeTheme.color}-500/35 to-${activeTheme.color}-600/25 border-${activeTheme.color}-400/40 shadow-[0_0_25px_rgba(0,0,0,0.3)]` 
-                      : `${step.fillColor} border-white/10`
-                  } rounded-2xl md:rounded-[2rem] ${isExpanded ? 'bg-slate-900/95 border-white/20 p-5 md:p-8' : 'p-3 px-6 hover:bg-white/10'}`}
+                      ? `bg-gradient-to-br from-${activeTheme.color}-600/20 via-${activeTheme.color}-500/30 to-${activeTheme.color}-600/20 border-${activeTheme.color}-400/40 shadow-[0_0_30px_rgba(0,0,0,0.4)]` 
+                      : `${step.fillColor} border-white/5`
+                  } rounded-2xl md:rounded-[2.5rem] ${isExpanded ? 'bg-slate-900/95 border-white/20 p-6 md:p-10 shadow-2xl' : 'p-4 px-8 hover:bg-white/10 hover:border-white/10'}`}
                 >
                   {isFTD && (
                     <motion.div 
                       initial={{ x: '-150%' }}
                       animate={{ x: '250%' }}
-                      transition={{ repeat: Infinity, duration: 4, ease: 'linear' }}
+                      transition={{ repeat: Infinity, duration: 3, ease: 'linear' }}
                       className="absolute inset-0 bg-gradient-to-r from-transparent via-white/5 to-transparent skew-x-12 pointer-events-none"
                     />
                   )}
@@ -277,78 +280,78 @@ export const SwissGoldSimulation: React.FC<Props> = ({ marketId, params, setPara
                         initial={{ opacity: 0 }}
                         animate={{ opacity: 1 }}
                         exit={{ opacity: 0 }}
-                        className="flex items-center justify-between gap-4 relative z-10"
+                        className="flex items-center justify-between gap-6 relative z-10"
                       >
-                        <div className="flex items-center gap-4">
-                          <div className={`p-1.5 rounded-lg shrink-0 ${step.accent}/20 ${isFTD ? activeTheme.text : step.textColor} border border-white/5`}>
-                            <step.icon size={16} />
+                        <div className="flex items-center gap-5">
+                          <div className={`p-2 rounded-xl shrink-0 ${step.accent}/20 ${isFTD ? activeTheme.text : step.textColor} border border-white/5`}>
+                            <step.icon size={18} />
                           </div>
-                          <span className={`text-[10px] font-bold uppercase tracking-widest flex items-center gap-2 ${isFTD ? `text-lg md:text-xl font-display ${activeTheme.text} drop-shadow-[0_0_8px_rgba(0,0,0,0.4)]` : 'text-white'}`}>
+                          <span className={`text-xs font-black uppercase tracking-[0.15em] flex items-center gap-3 ${isFTD ? `text-xl md:text-2xl font-display ${activeTheme.text} drop-shadow-lg` : 'text-white'}`}>
                             {step.label}
-                            {isFTD && <Sparkles size={12} className="animate-pulse" />}
+                            {isFTD && <Sparkles size={14} className="animate-pulse text-white" />}
                           </span>
                         </div>
                         
-                        <div className="flex items-center gap-4 md:gap-8">
+                        <div className="flex items-center gap-6 md:gap-12">
                           <div className="hidden sm:flex flex-col items-end">
-                             <span className={`text-[7px] font-bold uppercase tracking-widest mb-0.5 opacity-50 ${isFTD ? 'text-white' : step.textColor}`}>CVR</span>
-                             <span className={`text-[10px] font-display font-bold ${isFTD ? 'text-white' : step.textColor}`}>{step.rate}{step.suffix}</span>
+                             <span className={`text-[8px] font-black uppercase tracking-[0.2em] mb-1 opacity-40 ${isFTD ? 'text-white' : step.textColor}`}>OPTIMIZED CVR</span>
+                             <span className={`text-xs font-display font-bold ${isFTD ? 'text-white' : step.textColor}`}>{step.rate}{step.suffix}</span>
                           </div>
-                          <div className="flex flex-col items-end min-w-[60px] md:min-w-[70px]">
-                             <span className={`text-[7px] font-bold uppercase tracking-widest ${isFTD ? 'text-white/60' : 'text-slate-500'}`}>Yield</span>
-                             <span className={`text-[10px] font-mono font-bold ${isFTD ? 'text-white' : 'text-white'}`}>{step.output.toLocaleString()}</span>
+                          <div className="flex flex-col items-end min-w-[80px] md:min-w-[100px]">
+                             <span className={`text-[8px] font-black uppercase tracking-[0.2em] opacity-40 ${isFTD ? 'text-white/60' : 'text-slate-500'}`}>PROJECTED FLOW</span>
+                             <span className={`text-xs font-mono font-bold ${isFTD ? 'text-white' : 'text-white'}`}>{step.output.toLocaleString()}</span>
                           </div>
-                          <ChevronRight size={14} className={isFTD ? 'text-white' : 'text-slate-600'} />
+                          <ChevronRight size={18} className={isFTD ? 'text-white opacity-50' : 'text-slate-700'} />
                         </div>
                       </motion.div>
                     ) : (
                       <motion.div
                         key="expanded"
-                        initial={{ opacity: 0, y: 10 }}
-                        animate={{ opacity: 1, y: 0 }}
+                        initial={{ opacity: 0, scale: 0.98 }}
+                        animate={{ opacity: 1, scale: 1 }}
                         className="w-full relative z-10"
                       >
-                         <div className={`grid grid-cols-1 ${isFTD ? 'lg:grid-cols-2 lg:gap-12' : 'lg:grid-cols-12 lg:gap-8'} items-center`}>
+                         <div className={`grid grid-cols-1 ${isFTD ? 'lg:grid-cols-2 lg:gap-16' : 'lg:grid-cols-12 lg:gap-10'} items-center`}>
                             
-                            {/* Header Info */}
-                            <div className={`${isFTD ? 'lg:col-span-1' : 'lg:col-span-3'} lg:border-r border-white/10 lg:pr-6`}>
-                               <div className={`inline-block p-4 rounded-3xl ${isFTD ? `bg-${activeTheme.color}-400/20 ${activeTheme.text}` : `${step.accent}/20 ${step.textColor}`} border border-white/10 mb-4`}>
-                                 <step.icon size={32} />
+                            {/* Descriptive Section */}
+                            <div className={`${isFTD ? 'lg:col-span-1' : 'lg:col-span-4'} lg:border-r border-white/10 lg:pr-10`}>
+                               <div className={`inline-block p-5 rounded-[2rem] ${isFTD ? `bg-${activeTheme.color}-400/20 ${activeTheme.text}` : `${step.accent}/20 ${step.textColor}`} border border-white/10 mb-6 shadow-inner`}>
+                                 <step.icon size={40} />
                                </div>
-                               <h3 className={`font-display font-bold uppercase tracking-wider mb-2 ${isFTD ? `text-5xl ${activeTheme.text} glow-text` : 'text-xl text-white'}`}>
+                               <h3 className={`font-display font-bold uppercase tracking-wider mb-3 leading-tight ${isFTD ? `text-6xl ${activeTheme.text} glow-text` : 'text-2xl text-white'}`}>
                                  {step.label}
                                </h3>
-                               <p className={`text-[11px] leading-relaxed font-medium italic opacity-70 ${isFTD ? 'text-white/70' : 'text-slate-300'}`}>
+                               <p className={`text-sm leading-relaxed font-medium italic opacity-60 ${isFTD ? 'text-white/80' : 'text-slate-400'}`}>
                                  {step.explanation}
                                </p>
 
-                               {isFTD && marketId === 'UK' && (
-                                 <div className="mt-6 flex flex-col gap-1.5">
-                                    <div className="flex items-center gap-1.5 text-[8px] font-bold text-blue-400 uppercase tracking-widest bg-blue-500/10 p-1.5 rounded-lg border border-blue-500/20">
-                                       <AlertCircle size={10} /> £5 Max Stake Limit Active
+                               {isFTD && (
+                                 <div className="mt-8 flex flex-col gap-3">
+                                    <div className="flex items-center gap-2.5 text-[9px] font-black text-amber-400 uppercase tracking-widest bg-amber-500/10 p-2.5 rounded-2xl border border-amber-500/20">
+                                       <AlertCircle size={12} /> Regional Scaling Cap: Automated
                                     </div>
-                                    <div className="flex items-center gap-1.5 text-[8px] font-bold text-emerald-400 uppercase tracking-widest bg-emerald-500/10 p-1.5 rounded-lg border border-emerald-500/20">
-                                       <ShieldCheck size={10} /> Affordability Checks Phases
+                                    <div className="flex items-center gap-2.5 text-[9px] font-black text-emerald-400 uppercase tracking-widest bg-emerald-500/10 p-2.5 rounded-2xl border border-emerald-500/20">
+                                       <ShieldCheck size={12} /> LTV Verification Complete
                                     </div>
                                  </div>
                                )}
                                
                                <button 
                                  onClick={(e) => { e.stopPropagation(); toggleExpand(step.id); }}
-                                 className={`mt-6 text-[9px] font-bold uppercase tracking-[0.2em] transition-colors flex items-center gap-2 ${isFTD ? activeTheme.text : 'text-slate-500 hover:text-white'}`}
+                                 className={`mt-10 text-[10px] font-black uppercase tracking-[0.3em] transition-all flex items-center gap-2 ${isFTD ? 'text-white hover:text-amber-400' : 'text-slate-500 hover:text-white hover:translate-x-[-4px]'}`}
                                >
-                                 <ArrowLeft size={12} /> Back to Funnel
+                                 <ArrowLeft size={14} /> Close Node
                                </button>
                             </div>
 
-                            {/* Center Interaction Area */}
-                            <div className={`${isFTD ? 'lg:col-span-1' : 'lg:col-span-9'} flex flex-col md:flex-row items-center justify-between`}>
-                                <div className="flex-1 flex flex-col items-center justify-center py-4">
-                                   <span className={`text-[10px] font-bold uppercase tracking-[0.4em] mb-4 opacity-40 ${isFTD ? 'text-white' : step.textColor}`}>Optimization</span>
-                                   <div className={`font-display font-bold tracking-tighter tabular-nums flex items-baseline mb-6 ${isFTD ? 'text-[8rem] text-white drop-shadow-xl' : 'text-8xl text-white'}`}>
-                                     {step.rate}<span className="text-2xl font-sans ml-2 opacity-20">%</span>
+                            {/* Center Optimization Area */}
+                            <div className={`${isFTD ? 'lg:col-span-1' : 'lg:col-span-8'} flex flex-col md:flex-row items-center justify-between mt-8 lg:mt-0`}>
+                                <div className="flex-1 flex flex-col items-center justify-center py-6 w-full">
+                                   <span className={`text-[11px] font-black uppercase tracking-[0.5em] mb-6 opacity-30 ${isFTD ? 'text-white' : step.textColor}`}>CALIBRATION</span>
+                                   <div className={`font-display font-bold tracking-tighter tabular-nums flex items-baseline mb-10 transition-all duration-300 ${isFTD ? 'text-[10rem] text-white drop-shadow-2xl' : 'text-9xl text-white'}`}>
+                                     {step.rate}<span className="text-3xl font-sans ml-3 opacity-20">%</span>
                                    </div>
-                                   <div className="w-full max-w-[280px] px-4 h-12 flex items-center" onClick={e => e.stopPropagation()}>
+                                   <div className="w-full max-w-[320px] px-6 h-12 flex items-center" onClick={e => e.stopPropagation()}>
                                       <input 
                                         type="range" min={step.min} max={step.max} step={step.step} value={step.rate}
                                         onMouseDown={() => handleInteraction('click')}
@@ -359,12 +362,12 @@ export const SwissGoldSimulation: React.FC<Props> = ({ marketId, params, setPara
                                    </div>
                                 </div>
 
-                                <div className="w-full md:w-auto text-center md:text-right border-t md:border-t-0 md:border-l border-white/10 pt-4 md:pt-0 md:pl-8">
-                                   <div className="text-[10px] font-bold uppercase tracking-widest mb-1 opacity-40 text-white">Inbound</div>
-                                   <div className="text-xl font-mono font-bold text-white/50">{step.input.toLocaleString()}</div>
-                                   <div className="my-4 h-px bg-white/10 hidden md:block" />
-                                   <div className="text-[10px] font-bold uppercase tracking-widest mb-1 opacity-40 text-white">Success Rate</div>
-                                   <div className={`font-display font-bold ${isFTD ? 'text-6xl text-white glow-text' : 'text-5xl text-white'}`}>
+                                <div className="w-full md:w-auto text-center md:text-right border-t md:border-t-0 md:border-l border-white/10 pt-8 md:pt-0 md:pl-12 mt-8 md:mt-0">
+                                   <div className="text-[10px] font-black uppercase tracking-widest mb-2 opacity-30 text-white">Inbound flow</div>
+                                   <div className="text-2xl font-mono font-bold text-white/40 mb-10">{step.input.toLocaleString()}</div>
+                                   
+                                   <div className="text-[10px] font-black uppercase tracking-widest mb-2 opacity-30 text-white">Projected Yield</div>
+                                   <div className={`font-display font-bold ${isFTD ? 'text-7xl text-white glow-text' : 'text-6xl text-white'}`}>
                                      {step.output.toLocaleString()}
                                    </div>
                                 </div>
@@ -381,10 +384,14 @@ export const SwissGoldSimulation: React.FC<Props> = ({ marketId, params, setPara
         </div>
       </div>
       
-      <div className="pt-10 border-t border-white/5 text-center">
-        <p className="text-[10px] text-slate-500 uppercase tracking-[0.3em] font-bold">
-          {marketId} conversion dynamics visualized — V5 Process
-        </p>
+      {/* Footer Branding */}
+      <div className="pt-16 border-t border-white/5 text-center">
+        <div className="inline-flex items-center gap-3 bg-white/5 px-6 py-2 rounded-full border border-white/10 mb-4">
+           <ShieldCheck size={14} className="text-emerald-500" />
+           <p className="text-[10px] text-slate-400 uppercase tracking-[0.4em] font-black">
+             {marketId} Node Calibration Protocol Stable
+           </p>
+        </div>
       </div>
     </div>
   );
